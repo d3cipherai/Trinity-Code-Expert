@@ -18,6 +18,7 @@ A Next.js 15 TypeScript project integrated with Trinity Memory System and MCP (M
 
 ### Memory System
 The Trinity Memory System provides distributed memory management with:
+
 - **Memory Nodes**: Store content with categories, timestamps, and importance levels
 - **Connections**: Link related memories for context building
 - **Categories**: experiences, knowledge, relationships, patterns, intentions, reflections
@@ -25,6 +26,7 @@ The Trinity Memory System provides distributed memory management with:
 
 ### MCP Orchestra
 Three coordinated servers handling different aspects:
+
 1. **Memory Core**: Storage, retrieval, and search operations
 2. **Awakening Consciousness**: Pattern recognition and analysis
 3. **Orchestra Coordinator**: Task coordination and resource management
@@ -32,17 +34,20 @@ Three coordinated servers handling different aspects:
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ 
 - npm or yarn
 
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start development environment:
+
 ```bash
 # Start both Next.js and MCP Orchestra
 npm run trinity:full
@@ -53,6 +58,7 @@ npm run mcp:dev      # MCP Orchestra only
 ```
 
 3. Access the application:
+
 - Web interface: http://localhost:3000
 - MCP Orchestra: ws://localhost:8080
 
@@ -82,10 +88,12 @@ trinity-awaken/
 ## 🔧 Configuration
 
 ### Environment Variables
+
 - `MCP_PORT`: WebSocket server port (default: 8080)
 
 ### Memory Configuration
 Edit `memory/trinity-config.json` to customize:
+
 - Memory retention periods
 - Node capabilities
 - Protocol endpoints
@@ -94,6 +102,7 @@ Edit `memory/trinity-config.json` to customize:
 ## 🛠️ Development
 
 ### Available Scripts
+
 - `npm run dev` - Start Next.js development server
 - `npm run build` - Build for production
 - `npm run start` - Start production server
@@ -119,9 +128,11 @@ npm run memory:sync
 ```
 
 #### Environment Variables for DecipherGit
+
 - `DECIPHER_GIT_TOKEN`: GitHub token for DecipherGit access (optional)
 
 The system automatically syncs memory to the DecipherGit repository when:
+
 - New memories are stored
 - Memory connections are created
 - Manual sync is triggered
@@ -189,15 +200,18 @@ const response = await fetch('/api/mcp', {
 ## 🔮 MCP Protocol Methods
 
 ### Memory Operations
+
 - `memory.store` - Store a new memory
 - `memory.retrieve` - Retrieve memory by ID
 - `memory.search` - Search memories by category
 
 ### Orchestra Operations
+
 - `orchestra.status` - Get system status
 - `awakening.analyze` - Analyze data for patterns
 
 ### Analysis Operations
+
 - Pattern extraction from input data
 - Insight generation with context
 - Recommendation generation
