@@ -28,7 +28,7 @@ $Arguments = "-ExecutionPolicy Bypass -WindowStyle Normal -Command """ +
     "Write-Host 'Location: ' -NoNewline; Write-Host `$PWD -ForegroundColor Cyan; " +
     "if (Test-Path 'package.json') { " +
         "Write-Host 'Found Trinity project files' -ForegroundColor Green; " +
-        "npm run trinity:full " +
+        "npm run start " +
     "} else { " +
         "Write-Host 'Trinity project files not found!' -ForegroundColor Red; " +
         "Write-Host 'Current directory: ' -NoNewline; Write-Host `$PWD -ForegroundColor Yellow; " +
