@@ -1,4 +1,4 @@
-import TrinityChat from '../../components/TrinityChat';
+import TrinityChat from '../src/components/TrinityChat';
 
 export default function Home() {
   return (

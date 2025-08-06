@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "status:check": "powershell -ExecutionPolicy Bypass -File scripts/trinity-status-check.ps1",
+    "status": "npm run status:check"
+  }
+}
