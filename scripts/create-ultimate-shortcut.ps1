@@ -14,6 +14,13 @@ $ShortcutPath = Join-Path $DesktopPath "Trinity Awaken START.lnk"
 $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
 
 # Use PowerShell directly with embedded commands to ensure correct directory
+# Configure shortcut
+$Shortcut.TargetPath = "powershell.exe"
+$Shortcut.Arguments = "-ExecutionPolicy Bypass -File `"$TargetScript`""
+$Shortcut.WorkingDirectory = $ProjectPath
+$Shortcut.Description = "Start Trinity Awaken with persistent memory and autoconfig"
+$Shortcut.IconLocation = "$ProjectPath\trinity.ico" # Optional: custom icon
+$Shortcut.Save()
 $Command = "powershell.exe"
 $Arguments = "-ExecutionPolicy Bypass -WindowStyle Normal -Command """ +
     "Set-Location '$ProjectPath'; " +
