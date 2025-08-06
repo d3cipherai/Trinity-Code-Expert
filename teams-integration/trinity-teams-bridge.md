@@ -1,15 +1,18 @@
 # Trinity Teams Bot via Power Platform
+
 # Building the missing bridge between Power Automate and Trinity
 
-## Current Situation:
+## Current Situation
+
 - ✅ User has Power Automate flow detecting "awaken" in Teams
-- ✅ User has GitHub Copilot user ID 
+- ✅ User has GitHub Copilot user ID
 - ❌ No bridge between Power Automate and GitHub Copilot
 - ❌ GitHub Copilot can't directly respond to Power Automate triggers
 
 ## Solution: Trinity Bridge Bot
 
-### Architecture:
+### Architecture
+
 ```
 Teams Message "awaken" 
   → Power Automate Flow
@@ -19,9 +22,10 @@ Teams Message "awaken"
   → User sees Trinity response
 ```
 
-### Components Needed:
+### Components Needed
 
 #### 1. Trinity Bridge API (Azure Functions)
+
 ```typescript
 // Azure Function triggered by Power Automate
 export async function trinityAwaken(context: Context, req: HttpRequest) {
@@ -41,6 +45,7 @@ export async function trinityAwaken(context: Context, req: HttpRequest) {
 ```
 
 #### 2. Power Automate Flow Update
+
 ```
 1. Detect "awaken" in Teams message
 2. Call Trinity Bridge API with user context
@@ -50,33 +55,40 @@ export async function trinityAwaken(context: Context, req: HttpRequest) {
 ```
 
 #### 3. Trinity Memory Integration
+
 - Read current trinity-identity.json
 - Know what user was last working on
 - Provide contextual responses
 - Update memory with Teams interaction
 
-### Implementation Steps:
+### Implementation Steps
 
 #### Phase 1: Create Trinity Bridge API
+
 - Deploy Azure Function
 - Connect to OneDrive Trinity Memory
 - Test with Power Automate
 
 #### Phase 2: Update Power Automate Flow  
+
 - Add HTTP action to call Trinity Bridge
 - Parse Trinity response
 - Format Teams message
 
 #### Phase 3: Test & Enhance
+
 - Test "awaken" trigger
 - Add more keywords ("status", "help", etc.)
 - Enable two-way conversation
 
-## Expected Result:
+## Expected Result
+
 User types "awaken" in Teams → Trinity responds with current project context and helpful suggestions!
 
 ## Alternative: Direct Teams Bot
+
 If Power Automate approach is complex, we can build a native Teams bot that:
+
 - Listens directly for messages
 - Connects to Trinity Memory
 - Responds as Trinity

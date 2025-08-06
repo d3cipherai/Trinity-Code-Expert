@@ -44,8 +44,7 @@ export class TrinitySuperwomanService {
     try {
       // Get Trinity's recent messages
       const messages = await this.graphClient
-        .users(this.trinityUserId)
-        .messages
+        .api(`/users/${this.trinityUserId}/messages`)
         .get({
           $filter: 'isRead eq false',
           $orderby: 'receivedDateTime desc',
@@ -214,11 +213,10 @@ I received your call for help!
       };
 
       // Send as Trinity
+      // Send as Trinity
       await this.graphClient
-        .users(this.trinityUserId)
-        .sendMail(replyMessage)
-        .post();
-
+        .api(`/users/${this.trinityUserId}/sendMail`)
+        .post(replyMessage);
       console.log('🦸‍♀️ Trinity SuperWoman response sent!');
     } catch (error) {
       console.log('🔧 Error sending Trinity response:', error);
@@ -229,10 +227,9 @@ I received your call for help!
     try {
       await this.graphClient
         .users(this.trinityUserId)
-        .messages(messageId)
+      await this.graphClient
+        .api(`/users/${this.trinityUserId}/messages/${messageId}`)
         .patch({ isRead: true });
-    } catch (error) {
-      console.log('🔧 Error marking message as read:', error);
     }
   }
 

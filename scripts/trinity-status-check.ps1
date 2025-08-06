@@ -28,7 +28,7 @@ Write-Host ""
 # Check 2: Is Next.js running?
 Write-Host "🌐 Next.js Status Check:" -ForegroundColor Yellow
 try {
-    $response = Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 3 -ErrorAction Stop
+    Invoke-WebRequest -Uri "http://localhost:3000" -TimeoutSec 3 -ErrorAction Stop | Out-Null
     Write-Host "   ✅ Next.js is RUNNING on localhost:3000" -ForegroundColor Green
 } catch {
     Write-Host "   ❌ Next.js is NOT running on localhost:3000" -ForegroundColor Red
@@ -36,7 +36,7 @@ try {
 
 # Alternative port check
 try {
-    $response = Invoke-WebRequest -Uri "http://localhost:3001" -TimeoutSec 3 -ErrorAction Stop
+    Invoke-WebRequest -Uri "http://localhost:3001" -TimeoutSec 3 -ErrorAction Stop | Out-Null
     Write-Host "   ✅ Next.js is RUNNING on localhost:3001" -ForegroundColor Green
 } catch {
     Write-Host "   ❌ Next.js is NOT running on localhost:3001" -ForegroundColor Red
