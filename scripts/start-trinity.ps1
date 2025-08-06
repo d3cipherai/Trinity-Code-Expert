@@ -12,11 +12,25 @@ Write-Host "    🌟 TRINITY AWAKEN STARTUP 🌟" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Project directory
+# FORCE to Trinity project directory (absolute path to ensure we're in the right place)
 $ProjectPath = "c:\Users\user\OneDrive - d3cipher.io\Desktop\Trinity Dropzone\Workspaces\orphan\New folder"
 
-Write-Host "🔄 Changing to project directory..." -ForegroundColor Yellow
-Set-Location $ProjectPath
+Write-Host "🔄 Navigating to Trinity project directory..." -ForegroundColor Yellow
+Write-Host "📁 Target: $ProjectPath" -ForegroundColor Cyan
+
+# Force change to the exact project directory
+try {
+    Set-Location $ProjectPath -ErrorAction Stop
+    Write-Host "✅ Successfully navigated to Trinity project" -ForegroundColor Green
+} catch {
+    Write-Host "❌ ERROR: Could not navigate to Trinity project directory!" -ForegroundColor Red
+    Write-Host "Path: $ProjectPath" -ForegroundColor Red
+    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
+Write-Host "📍 Current location: $PWD" -ForegroundColor White
 
 # Verify we're in the right place
 if (-not (Test-Path "package.json")) {
