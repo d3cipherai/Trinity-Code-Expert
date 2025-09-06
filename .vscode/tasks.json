@@ -43,6 +43,19 @@
 			"options": {
 				"cwd": "${workspaceFolder}/azure-functions"
 			}
+		},
+		{
+			"label": "Trinity Install & Audit",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"install"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "build"
 		}
 	]
 }

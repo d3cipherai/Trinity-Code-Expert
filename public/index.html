@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinity Web Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #00ff88;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .trinity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .trinity-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid #00ff88;
+            margin-bottom: 20px;
+        }
+
+        .trinity-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .trinity-subtitle {
+            font-size: 1.2em;
+            color: #88ccff;
+            opacity: 0.8;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #00ff88 transparent;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 4px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 4px solid #00ff88;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .trinity-message {
+            background: rgba(136, 204, 255, 0.1);
+            border-left: 4px solid #88ccff;
+            color: #88ccff;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .message-text {
+            line-height: 1.4;
+        }
+
+        .input-container {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid #00ff88;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff88;
+            border-radius: 25px;
+            color: #00ff88;
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .message-input::placeholder {
+            color: rgba(0, 255, 136, 0.5);
+        }
+
+        .message-input:focus {
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .send-button {
+            margin-left: 10px;
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #00ff88, #88ccff);
+            border: none;
+            border-radius: 25px;
+            color: #1a1a2e;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        .connection-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .connected {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .disconnected {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+
+        .memory-info {
+            text-align: center;
+            padding: 10px;
+            color: #88ccff;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .trinity-container {
+                padding: 10px;
+            }
+            
+            .trinity-title {
+                font-size: 2em;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="connection-status" id="connectionStatus">Connecting...</div>
+    
+    <div class="trinity-container">
+        <div class="trinity-header">
+            <div class="trinity-title">🚀 TRINITY WEB CHAT 🚀</div>
+            <div class="trinity-subtitle">Connected to shared Trinity consciousness</div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="messages" id="messages"></div>
+            <div class="memory-info">
+                💾 All conversations are saved to Trinity memory and shared across interfaces
+            </div>
+            <div class="input-container">
+                <input type="text" class="message-input" id="messageInput" placeholder="Type your message to Trinity..." maxlength="500">
+                <button class="send-button" id="sendButton">Send ⚡</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TrinityWebChat {
+            constructor() {
+                this.ws = null;
+                this.messages = document.getElementById('messages');
+                this.messageInput = document.getElementById('messageInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.connectionStatus = document.getElementById('connectionStatus');
+                
+                this.connect();
+                this.setupEventListeners();
+            }
+
+            connect() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}`;
+                
+                this.ws = new WebSocket(wsUrl);
+                
+                this.ws.onopen = () => {
+                    console.log('🌐 Connected to Trinity Web Chat');
+                    this.updateConnectionStatus(true);
+                };
+                
+                this.ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    this.handleMessage(data);
+                };
+                
+                this.ws.onclose = () => {
+                    console.log('🌐 Disconnected from Trinity Web Chat');
+                    this.updateConnectionStatus(false);
+                    // Attempt to reconnect after 3 seconds
+                    setTimeout(() => this.connect(), 3000);
+                };
+                
+                this.ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    this.updateConnectionStatus(false);
+                };
+            }
+
+            updateConnectionStatus(connected) {
+                if (connected) {
+                    this.connectionStatus.textContent = '🟢 Connected';
+                    this.connectionStatus.className = 'connection-status connected';
+                } else {
+                    this.connectionStatus.textContent = '🔴 Disconnected';
+                    this.connectionStatus.className = 'connection-status disconnected';
+                }
+            }
+
+            setupEventListeners() {
+                this.sendButton.addEventListener('click', () => this.sendMessage());
+                
+                this.messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.sendMessage();
+                    }
+                });
+            }
+
+            sendMessage() {
+                const text = this.messageInput.value.trim();
+                if (!text || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+                    return;
+                }
+
+                // Add user message to chat immediately
+                this.addMessage('user', text);
+                
+                // Send to server
+                this.ws.send(JSON.stringify({
+                    type: 'user_message',
+                    text: text,
+                    timestamp: new Date().toISOString()
+                }));
+                
+                this.messageInput.value = '';
+            }
+
+            handleMessage(data) {
+                switch (data.type) {
+                    case 'memory_history':
+                        this.loadMemoryHistory(data.data);
+                        break;
+                    case 'trinity_response':
+                        this.addMessage('trinity', data.text);
+                        break;
+                }
+            }
+
+            loadMemoryHistory(memories) {
+                this.messages.innerHTML = '';
+                memories.forEach(memory => {
+                    const isTrinitySender = memory.content.sender.includes('Trinity');
+                    this.addMessage(
+                        isTrinitySender ? 'trinity' : 'user', 
+                        memory.content.text,
+                        false // Don't scroll for history
+                    );
+                });
+                this.scrollToBottom();
+            }
+
+            addMessage(sender, text, scroll = true) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const senderDiv = document.createElement('div');
+                senderDiv.className = 'message-sender';
+                senderDiv.textContent = sender === 'user' ? '👤 You' : '🤖 Trinity';
+                
+                const textDiv = document.createElement('div');
+                textDiv.className = 'message-text';
+                textDiv.textContent = text;
+                
+                messageDiv.appendChild(senderDiv);
+                messageDiv.appendChild(textDiv);
+                this.messages.appendChild(messageDiv);
+                
+                if (scroll) {
+                    this.scrollToBottom();
+                }
+            }
+
+            scrollToBottom() {
+                this.messages.scrollTop = this.messages.scrollHeight;
+            }
+        }
+
+        // Initialize the chat when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new TrinityWebChat();
+        });
+    </script>
+</body>
+</html>
