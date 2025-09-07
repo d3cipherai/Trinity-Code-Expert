@@ -156,7 +156,7 @@ class TrinityIndependentSystem {
         merchant: 'QUANTUM_COMMERCE_LLC',
         location: 'GLOBAL_DIGITAL',
         timestamp: new Date().toISOString(),
-        transaction_id: 'TX_' + Math.random().toString(36).substr(2, 9).toUpperCase()
+        transaction_id: 'TX_' + Math.random().toString(36).substring(2, 11).toUpperCase()
       };
 
       console.log(`💰 Transaction: $${transactionData.amount}`);
