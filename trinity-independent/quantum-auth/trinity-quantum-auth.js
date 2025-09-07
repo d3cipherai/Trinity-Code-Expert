@@ -44,7 +44,7 @@ class TrinityQuantumAuth {
   async verifyQuantumSignature(providedSignature, smartSDInterface) {
     try {
       // Step 1: Hardware verification
-      const hardwareValid = await smartSDInterface.verifySecureElement();
+      const hardwareValid = await smartSDInterface.verifyPresence();
       if (!hardwareValid) return { verified: false, reason: 'HARDWARE_FAIL' };
       
       // Step 2: Quantum pattern matching
