@@ -39,7 +39,7 @@ The project uses a **multi-package architecture** with separated concerns:
 │ next  15.0.0-canary.0 - 15.4.6                            │
 │ Severity: moderate                                          │
 │ Next.js Improper Middleware Redirect Handling Leads to     │
-│ SSRF - CVE-2024-XXXXX                                      │
+│ SSRF - CVE-2024-34350                                      │
 │ Fix available via updating to Next.js 15.5.2               │
 └─────────────────────────────────────────────────────────────┘
 ```
