@@ -1,0 +1,15 @@
+{
+	"debug.internalConsoleOptions": "neverOpen",
+	"trinity.memoryPath": "../trinity-memory/trinity-memory.json",
+	"trinity.mcpPort": 8080,
+	"trinity.webPort": 3001,
+	"azureFunctions.deploySubpath": "azure-functions",
+	"azureFunctions.postDeployTask": "npm install (functions)",
+	"azureFunctions.projectLanguage": "JavaScript",
+	"azureFunctions.projectRuntime": "~4",
+	"azureFunctions.preDeployTask": "npm prune (functions)",
+	"todo-tree.tree.scanMode": "workspace",
+	"todo-tree.general.tags": ["TODO", "FIXME", "HACK", "NOTE"],
+	"todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^\\s*- \\[ \\])",
+	"todo-tree.general.statusBar": "total"
+}

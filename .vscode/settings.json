@@ -2,5 +2,33 @@
     "debug.internalConsoleOptions": "neverOpen",
     "trinity.memoryPath": "../trinity-memory/trinity-memory.json",
     "trinity.mcpPort": 8080,
-    "trinity.webPort": 3001
+    "trinity.webPort": 3001,
+    "azureFunctions.deploySubpath": "azure-functions",
+    "azureFunctions.postDeployTask": "npm install (functions)",
+    "azureFunctions.projectLanguage": "JavaScript",
+    "azureFunctions.projectRuntime": "~4",
+    "azureFunctions.preDeployTask": "npm prune (functions)",
+    
+    "todo-tree.tree.scanMode": "workspace",
+    "todo-tree.general.tags": ["TODO", "FIXME", "HACK", "NOTE", "TRINITY", "MCP"],
+    "todo-tree.regex.regex": "((//|#|<!--|;|/\\*|^)\\s*($TAGS)|^\\s*- \\[ \\])",
+    
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    
+    "files.associations": {
+        "*.css": "tailwindcss",
+        "trinity-config.json": "jsonc",
+        "trinity-memory.json": "json",
+        "*.mcp": "json"
+    },
+    
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    "tailwindCSS.emmetCompletions": true
 }

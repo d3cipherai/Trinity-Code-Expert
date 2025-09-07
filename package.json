@@ -14,13 +14,16 @@
     "trinity:terminal": "node scripts/trinity-terminal-chat.js",
     "trinity:web": "node scripts/trinity-web-server.js",
     "trinity:chat": "concurrently \"npm run trinity:web\" \"npm run mcp:dev\"",
+    "trinity:legal": "node scripts/trinity-legal-orchestrator.js --analyze",
+    "trinity:legal-quick": "node scripts/trinity-legal-analyzer.js",
+    "trinity:crawl-legal": "node scripts/trinity-legal-crawler.js",
     "setup:deciphergit": "tsx scripts/setup-deciphergit.ts",
     "memory:sync": "tsx scripts/sync-memory.ts"
   },
   "dependencies": {
     "express": "^4.18.2",
     "fs-extra": "^11.3.1",
-    "next": "15.4.7",
+    "next": "15.4.5",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

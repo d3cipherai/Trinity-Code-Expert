@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "trinity:full": "concurrently \"npm run dev\" \"npm run mcp:start\"",
+    "trinity:build": "npm run build && concurrently \"npm start\" \"npm run mcp:start\"",
+    "trinity:legal": "node scripts/trinity-legal-orchestrator.js --analyze",
+    "trinity:legal-quick": "node scripts/trinity-legal-analyzer.js",
+    "trinity:crawl-legal": "node scripts/trinity-legal-crawler.js",
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "mcp:start": "tsx mcp-orchestra/orchestrator.ts",
+    "mcp:dev": "tsx watch mcp-orchestra/orchestrator.ts"
+  }
+}
