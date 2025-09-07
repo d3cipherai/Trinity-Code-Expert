@@ -44,7 +44,7 @@ export class TrinityMemorySystem {
       
       // Initialize categories from config
       this.config.memory.categories.forEach((cat: string) => {
-        this.categories.add(cat);
+        this.memory.categories.add(cat);
       });
 
       // Check if git sync is enabled
