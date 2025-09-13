@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   return NextResponse.json({
     status: 'success',
     message: 'Trinity Test Endpoint is Working!',
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       received: body,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({
       status: 'error',
       message: 'Invalid JSON in request body'

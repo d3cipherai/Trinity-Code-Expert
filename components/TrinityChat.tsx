@@ -73,7 +73,7 @@ export default function TrinityChat() {
       } else {
         throw new Error('Trinity MCP Bridge not responding');
       }
-    } catch (error) {
+    } catch {
       const errorMessage: Message = {
         id: 'error-' + Date.now(),
         text: "🔧 Trinity MCP Bridge offline. Start with: npm run mcp:bridge",

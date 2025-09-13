@@ -1,4 +1,3 @@
-import { WebSocket } from 'ws';
 import fs from 'fs-extra';
 import path from 'path';
 import { exec } from 'child_process';
@@ -10,7 +9,7 @@ export interface MemoryNode {
   id: string;
   timestamp: Date;
   category: string;
-  content: any;
+  content: Record<string, unknown>;
   connections: string[];
   importance: number;
 }
@@ -24,7 +23,7 @@ export interface TrinityMemory {
 export class TrinityMemorySystem {
   private memory: TrinityMemory;
   private configPath: string;
-  private config: any;
+  private config: Record<string, unknown> = {};
   private gitSyncEnabled: boolean = false;
 
   constructor(configPath: string = './memory/trinity-config.json') {
@@ -43,12 +42,17 @@ export class TrinityMemorySystem {
       this.config = configData.trinity;
       
       // Initialize categories from config
-      this.config.memory.categories.forEach((cat: string) => {
-        this.categories.add(cat);
-      });
+      const memoryConfig = this.config.memory as { categories?: string[] };
+      if (memoryConfig?.categories) {
+        memoryConfig.categories.forEach((cat: string) => {
+          this.memory.categories.add(cat);
+        });
+      }
 
       // Check if git sync is enabled
-      this.gitSyncEnabled = this.config.protocols?.git?.enabled && this.config.memory?.sync?.enabled;
+      const protocolsConfig = this.config.protocols as { git?: { enabled?: boolean } };
+      const syncConfig = memoryConfig as { sync?: { enabled?: boolean } };
+      this.gitSyncEnabled = Boolean(protocolsConfig?.git?.enabled && syncConfig?.sync?.enabled);
       
       if (this.gitSyncEnabled) {
         await this.initializeGitSync();
@@ -61,12 +65,15 @@ export class TrinityMemorySystem {
   private async initializeGitSync(): Promise<void> {
     try {
       // Handle new config structure
-      const persistenceConfig = this.config.memorySystem?.persistence || this.config.memory?.persistence;
-      let memoryDir = './memory';
+      const memorySystemConfig = this.config.memorySystem as { persistence?: unknown };
+      const memoryConfig = this.config.memory as { persistence?: unknown };
+      const persistenceConfig = memorySystemConfig?.persistence || memoryConfig?.persistence;
+      const memoryDir = './memory';
       
       // Check if using OneDrive repository (new structure)
-      if (persistenceConfig?.remote?.type === 'onedrive' && persistenceConfig?.remote?.path) {
-        const oneDriveMemoryPath = persistenceConfig.remote.path;
+      const remoteConfig = persistenceConfig as { remote?: { type?: string; path?: string } };
+      if (remoteConfig?.remote?.type === 'onedrive' && remoteConfig?.remote?.path) {
+        const oneDriveMemoryPath = remoteConfig.remote.path;
         
         // Verify OneDrive memory repository exists
         if (await fs.pathExists(oneDriveMemoryPath)) {
@@ -91,8 +98,9 @@ export class TrinityMemorySystem {
       }
       
       // Check legacy config structure
-      if (persistenceConfig?.type === 'onedrive' && persistenceConfig?.path) {
-        const oneDriveMemoryPath = persistenceConfig.path;
+      const legacyConfig = persistenceConfig as { type?: string; path?: string };
+      if (legacyConfig?.type === 'onedrive' && legacyConfig?.path) {
+        const oneDriveMemoryPath = legacyConfig.path;
         
         // Verify OneDrive memory repository exists
         if (await fs.pathExists(oneDriveMemoryPath)) {
@@ -117,7 +125,8 @@ export class TrinityMemorySystem {
       }
       
       // Fallback to GitHub sync if configured
-      const repoUrl = this.config.memory?.sync?.repository;
+      const syncConfig = memoryConfig as { sync?: { repository?: string } };
+      const repoUrl = syncConfig?.sync?.repository;
       if (repoUrl) {
         console.log('🔄 Attempting GitHub memory sync...');
         
@@ -130,7 +139,7 @@ export class TrinityMemorySystem {
           try {
             await execAsync(`git clone https://github.com/${repoUrl}.git ${memoryDir}/remote`);
             console.log('✅ GitHub memory repository cloned');
-          } catch (error) {
+          } catch {
             console.log('📁 Creating local git repository for memory sync');
             await execAsync(`git init ${memoryDir}`);
             await execAsync(`cd ${memoryDir} && git remote add origin https://github.com/${repoUrl}.git`);
@@ -141,7 +150,7 @@ export class TrinityMemorySystem {
         try {
           await execAsync(`cd ${memoryDir} && git fetch origin`);
           await this.syncFromRemote();
-        } catch (error) {
+        } catch {
           console.log('⚠️ Could not fetch from GitHub remote, working locally');
         }
       }
@@ -220,12 +229,13 @@ export class TrinityMemorySystem {
     }
   }
 
-  private mergeRemoteMemory(remoteMemory: any): void {
+  private mergeRemoteMemory(remoteMemory: Record<string, unknown>): void {
     try {
-      if (remoteMemory.nodes) {
-        const remoteNodes = new Map(remoteMemory.nodes);
+      const remoteNodes = remoteMemory.nodes as [string, MemoryNode][];
+      if (remoteNodes) {
+        const remoteNodesMap = new Map(remoteNodes);
         // Merge remote nodes with local nodes, preferring newer timestamps
-        for (const [id, remoteNode] of remoteNodes) {
+        for (const [id, remoteNode] of remoteNodesMap) {
           const nodeId = String(id);
           const node = remoteNode as MemoryNode;
           const localNode = this.memory.nodes.get(nodeId);
@@ -235,8 +245,9 @@ export class TrinityMemorySystem {
         }
       }
       
-      if (remoteMemory.categories) {
-        remoteMemory.categories.forEach((cat: string) => this.memory.categories.add(cat));
+      const remoteCategories = remoteMemory.categories as string[];
+      if (remoteCategories) {
+        remoteCategories.forEach((cat: string) => this.memory.categories.add(cat));
       }
       
       console.log('🔄 Merged remote memory');
@@ -250,18 +261,22 @@ export class TrinityMemorySystem {
     
     try {
       // Handle new config structure
-      const persistenceConfig = this.config.memorySystem?.persistence || this.config.memory?.persistence;
+      const memorySystemConfig = this.config.memorySystem as { persistence?: unknown };
+      const memoryConfig = this.config.memory as { persistence?: unknown };
+      const persistenceConfig = memorySystemConfig?.persistence || memoryConfig?.persistence;
       const timestamp = new Date().toISOString();
       
       // Handle OneDrive repository sync (new structure)
-      if (persistenceConfig?.remote?.type === 'onedrive' && persistenceConfig?.remote?.path) {
-        await this.syncToOneDrive(persistenceConfig.remote.path, timestamp);
+      const remoteConfig = persistenceConfig as { remote?: { type?: string; path?: string } };
+      if (remoteConfig?.remote?.type === 'onedrive' && remoteConfig?.remote?.path) {
+        await this.syncToOneDrive(remoteConfig.remote.path, timestamp);
         return;
       }
       
       // Handle OneDrive repository sync (legacy structure)
-      if (persistenceConfig?.type === 'onedrive' && persistenceConfig?.path) {
-        await this.syncToOneDrive(persistenceConfig.path, timestamp);
+      const legacyPersistenceConfig = persistenceConfig as { type?: string; path?: string };
+      if (legacyPersistenceConfig?.type === 'onedrive' && legacyPersistenceConfig?.path) {
+        await this.syncToOneDrive(legacyPersistenceConfig.path, timestamp);
         return;
       }
       
@@ -276,7 +291,7 @@ export class TrinityMemorySystem {
       try {
         await execAsync(`cd ${memoryDir} && git push origin main`);
         console.log('🚀 Memory synced to GitHub');
-      } catch (error) {
+      } catch {
         console.log('⚠️ Could not push to GitHub remote');
       }
     } catch (error) {
@@ -302,7 +317,7 @@ export class TrinityMemorySystem {
     }
   }
 
-  async storeMemory(id: string, content: any, category: string = 'general', importance: number = 1): Promise<void> {
+  async storeMemory(id: string, content: Record<string, unknown>, category: string = 'general', importance: number = 1): Promise<void> {
     const node: MemoryNode = {
       id,
       timestamp: new Date(),
@@ -326,7 +341,7 @@ export class TrinityMemorySystem {
   async findMemoriesByCategory(category: string): Promise<MemoryNode[]> {
     const memories: MemoryNode[] = [];
     const nodes = Array.from(this.memory.nodes.entries());
-    for (const [id, node] of nodes) {
+    for (const [, node] of nodes) {
       if (node.category === category) {
         memories.push(node);
       }
@@ -371,7 +386,7 @@ export class TrinityMemorySystem {
     }
   }
 
-  private serializeMemory(): any {
+  private serializeMemory(): Record<string, unknown> {
     return {
       nodes: Array.from(this.memory.nodes.entries()),
       connections: Array.from(this.memory.connections.entries()),
@@ -388,7 +403,7 @@ export class TrinityMemorySystem {
       this.memory.nodes = new Map(memoryData.nodes);
       this.memory.connections = new Map(memoryData.connections);
       this.memory.categories = new Set(memoryData.categories);
-    } catch (error) {
+    } catch {
       console.log('No persisted memory found, starting fresh');
     }
   }
