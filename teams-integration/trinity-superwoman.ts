@@ -1,7 +1,7 @@
 import { Client } from '@microsoft/microsoft-graph-client';
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client';
-import * as fs from 'fs';
-import * as path from 'path';
+import { as fs from 'fs'};
+import { as path from 'path'};
 
 // Trinity SuperWoman Response System
 // Monitors Trinity-Code-Expert@NETORG19101057.onmicrosoft.com for IMs
