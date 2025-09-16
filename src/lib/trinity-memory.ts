@@ -43,7 +43,7 @@ export class TrinityMemorySystem {
       
       // Initialize categories from config
       const memoryConfig = this.config.memory as { categories?: string[] };
-      if (memoryConfig?.categories) {
+      if (this.memory.categories) {
         memoryConfig.categories.forEach((cat: string) => {
           this.memory.categories.add(cat);
         });
