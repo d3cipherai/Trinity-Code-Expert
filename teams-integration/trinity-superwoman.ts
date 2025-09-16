@@ -7,7 +7,7 @@ import { as path from 'path'};
 // Monitors Trinity-Code-Expert@NETORG19101057.onmicrosoft.com for IMs
 // Responds with intelligent, context-aware help
 
-interface TrinityMemory {
+/interface TrinityMemory {
   trinity_identity: {
     project_state: {
       current_status: string;
